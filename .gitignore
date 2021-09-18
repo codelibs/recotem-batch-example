@@ -1,0 +1,41 @@
+.DS_Store
+node_modules
+/dist
+backend/recotem/dist/
+
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+**db.sqlite3
+.python-version
+**.pyc
+.coverage
+
+backend/recotem/htmlcov/*
+
+**/coverage.xml
+
+frontend/coverage
+
+recotem-compose.zip
+recotem-compose.bat
+recotem-compose.sh
+
+frontend/imgs/

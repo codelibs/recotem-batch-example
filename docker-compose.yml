@@ -1,0 +1,37 @@
+version: "3.7"
+services:
+  queue:
+    image: rabbitmq:3
+  db:
+    image: postgres:12
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+    env_file:
+      - envs/production.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  backend:
+    depends_on:
+      - db
+      - queue
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - data-location:/app/data
+      - ./data:/opt/app/data
+    env_file:
+      - envs/production.env
+  celery_worker:
+    depends_on:
+      - backend
+    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha4
+    volumes:
+      - data-location:/app/data
+    env_file:
+      - envs/production.env
+volumes:
+  data-location:
+    driver: local
+  db-data:
+    driver: local
