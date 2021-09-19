@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - data-location:/app/data
-      - ./data:/opt/app/data
+      - ./model:/opt/app/model
     env_file:
       - envs/production.env
   celery_worker:

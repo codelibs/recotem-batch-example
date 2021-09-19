@@ -9,4 +9,4 @@ RUN mkdir -p /opt/app/model
 COPY --from=builder /go/bin/recotem /usr/bin/recotem
 COPY app /opt/app
 
-CMD ["/bin/bash", "-x", "/opt/app/run.sh"]
+CMD ["/bin/bash", "/opt/app/run.sh"]
