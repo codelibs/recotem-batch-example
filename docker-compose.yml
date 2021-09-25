@@ -2,8 +2,20 @@ version: "3.7"
 services:
   queue:
     image: rabbitmq:3
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: "5s"
+      timeout: "3s"
+      retries: 2
+      start_period: "5s"
   db:
     image: postgres:12
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "recotem_user", "-d", "recotem"]
+      interval: "5s"
+      timeout: "3s"
+      retries: 2
+      start_period: "5s"
     volumes:
       - db-data:/var/lib/postgresql/data/pgdata
     env_file:
@@ -12,11 +24,19 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
   backend:
     depends_on:
-      - db
-      - queue
+      db:
+        condition: service_healthy
+      queue:
+        condition: service_healthy
     build:
       context: .
       dockerfile: Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:80/api/ping/ || exit 1"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 2
+      start_period: "5s"
     volumes:
       - data-location:/app/data
       - ./model:/opt/app/model
@@ -24,7 +44,8 @@ services:
       - envs/production.env
   celery_worker:
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha4
     volumes:
       - data-location:/app/data

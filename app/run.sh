@@ -12,7 +12,7 @@ tmp_file=/tmp/recotem.$$
 count=0
 ret=1
 while [[ ${count} -lt ${max_wait} && ${ret} != "0" ]] ; do
-  curl -s "${RECOTEM_URL}/" -o /dev/null
+  curl -s "${RECOTEM_URL}/api/ping/" -o /dev/null
   ret=$?
   count=$((count+1))
   sleep 1

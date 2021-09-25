@@ -1,0 +1,66 @@
+name: backend
+type: Scheduled Job
+on:
+  schedule: "@daily"
+image:
+  build: Dockerfile
+  healthcheck:
+    command: ["CMD-SHELL", "curl -f http://localhost:80/api/ping/ || exit 1"]
+    interval: 10s
+    retries: 2
+    timeout: 5s
+    start_period: 5s
+cpu: 512
+memory: 1024
+variables:
+  DEBUG: true
+  CELERY_BROKER_URL: "amqp://guest@localhost:5672"
+  DATABASE_URL: "postgresql://recotem_user:VeryBadPassword@localhost:5432/recotem"
+  RECOTEM_URL: "http://localhost:80"
+  RECOTEM_USERNAME: admin
+  RECOTEM_PASSWORD: very_bad_password
+  USER_COLUMN: userId
+  ITEM_COLUMN: itemId
+  TIME_COLUMN: timestamp
+  HELDOUT_RATIO: 0.3
+  TEST_USER_RATIO: 1.0
+  CUTOFF: 10
+  TARGET_METRIC: map
+  N_TASKS_PARALLEL: 1
+  MEMORY_BUDGET: 1000
+  N_TRIALS: 20
+  MODEL_PATH: /opt/app/model/model.pkl
+depends_on:
+  db: healthy
+  queue: healthy
+sidecars:
+  queue:
+    image:
+      location: rabbitmq:3
+      healthcheck:
+        command: ["CMD-SHELL", "rabbitmq-diagnostics -q ping"]
+        interval: 5s
+        retries: 2
+        timeout: 3s
+        start_period: 5s
+  db:
+    image:
+      location: postgres:12
+      healthcheck:
+        command: ["CMD-SHELL", "pg_isready -U recotem_user -d recotem"]
+        interval: 5s
+        retries: 2
+        timeout: 3s
+        start_period: 5s
+    variables:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: recotem_user
+      POSTGRES_PASSWORD: VeryBadPassword
+      POSTGRES_DB: recotem
+  celery_worker:
+    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha4
+    variables:
+      CELERY_BROKER_URL: "amqp://localhost@localhost:5672"
+      DATABASE_URL: "postgresql://recotem_user:VeryBadPassword@localhost:5432/recotem"
+    depends_on:
+      backend: healthy
