@@ -12,3 +12,9 @@ $ docker-compose -f docker-compose.yml build
 $ docker-compose -f docker-compose.yml up --abort-on-container-exit
 ```
 
+### Deploy On AWS ECS
+
+```
+$ copilot init -a recotem-batch-example -d ./Dockerfile -n backend --schedule "@daily" -t "Scheduled Job" --deploy
+```
+
