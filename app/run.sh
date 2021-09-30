@@ -125,7 +125,6 @@ if ! recotem trained-model download --id "${model_id}" --output "${MODEL_PATH}" 
   cat $tmp_file
   exit 1
 fi
-find "${MODEL_PATH}" -type f
 
 #
 # save model file

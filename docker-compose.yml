@@ -1,12 +1,12 @@
 version: "3.7"
 services:
   queue:
-    image: rabbitmq:3
+    image: bitnami/rabbitmq:3.9
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: "5s"
       timeout: "3s"
-      retries: 2
+      retries: 5
       start_period: "5s"
   db:
     image: postgres:12
@@ -14,7 +14,7 @@ services:
       test: ["CMD", "pg_isready", "-U", "recotem_user", "-d", "recotem"]
       interval: "5s"
       timeout: "3s"
-      retries: 2
+      retries: 5
       start_period: "5s"
     volumes:
       - db-data:/var/lib/postgresql/data/pgdata
@@ -46,7 +46,7 @@ services:
     depends_on:
       backend:
         condition: service_started
-    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha5
+    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha6
     volumes:
       - data-location:/app/data
     env_file:

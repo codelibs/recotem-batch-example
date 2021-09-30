@@ -1,8 +1,8 @@
 FROM golang:1.17.1 as builder
 
-RUN go install recotem.org/cli/recotem@latest
+RUN go install recotem.org/cli/recotem@v0.1.0
 
-FROM ghcr.io/codelibs/recotem-backend:v0.1.0.alpha5
+FROM ghcr.io/codelibs/recotem-backend:v0.1.0.alpha6
 
 RUN mkdir -p /opt/app/model
 
