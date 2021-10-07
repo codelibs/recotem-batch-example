@@ -40,7 +40,7 @@ sidecars:
       POSTGRES_PASSWORD: VeryBadPassword
       POSTGRES_DB: recotem
   celery_worker:
-    image: ghcr.io/codelibs/recotem-worker:snapshot
+    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha8
     variables:
       CELERY_BROKER_URL: "amqp://user:bitnami@localhost:5672"
       DATABASE_URL: "postgresql://recotem_user:VeryBadPassword@localhost:5432/recotem"

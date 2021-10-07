@@ -46,7 +46,7 @@ services:
     depends_on:
       backend:
         condition: service_started
-    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha6
+    image: ghcr.io/codelibs/recotem-worker:v0.1.0.alpha8
     volumes:
       - data-location:/app/data
     env_file:
